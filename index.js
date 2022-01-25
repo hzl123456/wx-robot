@@ -1,8 +1,10 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const bodyParser = require('body-parser');
 const {getSignature, encrypt, decrypt} = require('@wecom/crypto');
 
 const app = express();
+app.use(bodyParser());
 const apiUrl = 'http://www.tuling123.com/openapi/api';
 const apiKey = '0e4017d36c9f4cb1b59694f528e73e34';
 
@@ -18,8 +20,8 @@ app.get('/', (req, res) => {
 
 // 企信消息
 app.post('/', (req, res) => {
-  console.log("ssss1->", req.params, req.body, req.query);
-  const info = decrypt(aesKey, req.param("echostr"));
+  console.log("ssss1->", req.body);
+  const info = decrypt(aesKey, req.body.echostr);
   console.log("ssss2->", info);
   fetch(apiUrl, {
     method: 'POST',
