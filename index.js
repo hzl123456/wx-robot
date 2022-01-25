@@ -1,10 +1,10 @@
 const express = require('express');
 const fetch = require('node-fetch');
-const bodyParser = require('body-parser');
+const xmlParser = require('express-xml-bodyparser');
 const {getSignature, encrypt, decrypt} = require('@wecom/crypto');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(xmlParser());
 const apiUrl = 'http://www.tuling123.com/openapi/api';
 const apiKey = '0e4017d36c9f4cb1b59694f528e73e34';
 
