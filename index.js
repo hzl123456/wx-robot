@@ -12,7 +12,9 @@ const aesKey = 'NoHnuhMtRwcBpdw81ycvuMgOg5e23sHsWeqKy1gDi7g';
 
 // 企信校验
 app.get('/', (req, res) => {
+  console.log("ssss1->", req.query, req.query.echostr);
   const result = decrypt(aesKey, req.query.echostr);
+  console.log("ssss2->", result);
   res.send(result);
 });
 
@@ -20,7 +22,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   console.log("ssss1->", req.param("echostr"));
   const info = decrypt(aesKey, req.param("echostr"));
-  console.log("ssss2->", info)
+  console.log("ssss2->", info);
   fetch(apiUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -31,7 +33,7 @@ app.post('/', (req, res) => {
     .then(result => {
       // 进行一个消息的回复
       try {
-        console.log("ssss3->", result)
+        console.log("ssss3->", result);
         const Nonce = "123456";
         const TimeStamp = Date.now();
         const Encrypt = encrypt(aesKey, result.text, Nonce);
