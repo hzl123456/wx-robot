@@ -20,8 +20,9 @@ app.get('/', (req, res) => {
 
 // 企信消息
 app.post('/', (req, res) => {
+  // 加密的数据
   console.log("ssss1->", req.body);
-  const info = decrypt(aesKey, req.body.echostr);
+  const info = decrypt(aesKey, req.body.echostr[0]);
   console.log("ssss2->", info);
   fetch(apiUrl, {
     method: 'POST',
@@ -38,8 +39,14 @@ app.post('/', (req, res) => {
         const TimeStamp = Date.now();
         const Encrypt = encrypt(aesKey, result.text, Nonce);
         const MsgSignature = getSignature(token, TimeStamp, Nonce, Encrypt);
-        console.log("ssss4->", {Nonce, TimeStamp, Encrypt, MsgSignature});
-        res.send({Nonce, TimeStamp, Encrypt, MsgSignature});
+        const sendResult = `<xml>
+   <Encrypt>${[Encrypt]}</Encrypt>
+   <MsgSignature>${[MsgSignature]}</MsgSignature>
+   <TimeStamp>${TimeStamp}</TimeStamp>
+   <Nonce>${[Nonce]}</Nonce>
+</xml>`;
+        console.log("ssss4->", sendResult);
+        res.send(sendResult);
       } catch (e) {
         console.error("error:", e);
         res.send('')
