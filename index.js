@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 // 企信消息
 app.post('/', (req, res) => {
-  console.log("ssss1->", req.param("echostr"));
+  console.log("ssss1->", req.params, req.body, req.query);
   const info = decrypt(aesKey, req.param("echostr"));
   console.log("ssss2->", info);
   fetch(apiUrl, {
