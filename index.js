@@ -12,10 +12,8 @@ const aesKey = 'NoHnuhMtRwcBpdw81ycvuMgOg5e23sHsWeqKy1gDi7g';
 
 // 企信校验
 app.get('/', (req, res) => {
-  console.log("ssss1->", req.query, req.query.echostr);
   const result = decrypt(aesKey, req.query.echostr);
-  console.log("ssss2->", result);
-  res.send(result);
+  res.send(result.message);
 });
 
 // 企信消息
