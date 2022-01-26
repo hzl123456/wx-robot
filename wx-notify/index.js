@@ -1,7 +1,7 @@
 const getToken = require('./getToken');
 const postMsg = require('./postMsg');
 
-async function wxNotify(config) {
+const wxNotify = async (config) => {
   try {
     // 获取token
     const accessToken = await getToken();

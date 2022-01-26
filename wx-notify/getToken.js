@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function getToken() {
+const getToken = async () => {
   const BASE_URL = 'https://qyapi.weixin.qq.com';
   try {
     const response = await axios({
