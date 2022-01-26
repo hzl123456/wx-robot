@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, appRes) => {
   // 解析得到的xml数据
   xmlParser.parseString(decrypt(aesKey, req.body.xml.encrypt[0]).message, (err, xmlRes) => {
-    console.log("ssss1->", err, xmlRes.xml.Content[0]);
+    console.log("ssss1->", xmlRes.xml);
     fetch(apiUrl, {
       method: 'POST',
       body: JSON.stringify({
@@ -51,7 +51,7 @@ app.post('/', (req, appRes) => {
           }).toString()
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
-            .replace('<?xml version="1.0"?>', '');
+            .replace('<?xml version="1.0"?>\n', '');
           console.log("ssss3->", sendResult);
           appRes.send(sendResult);
         } catch (e) {
