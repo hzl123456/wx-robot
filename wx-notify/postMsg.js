@@ -1,20 +1,18 @@
-/**
- * 发送消息通知到企业微信
- */
-const axios= require('axios');
-
+const fetch = require('node-fetch');
 const BASE_URL = 'https://qyapi.weixin.qq.com';
 
 const postMsg = async (accessToken, config) => {
-  const response = await axios({
-    url: `${BASE_URL}/cgi-bin/message/send?access_token=${accessToken}`,
-    method: 'POST',
-    data: {
-      touser: config.touser || '@all',
-      ...config
-    }
-  });
-  return response.data
+  return new Promise((resolve, reject) => {
+    fetch(`${BASE_URL}/cgi-bin/message/send?access_token=${accessToken}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        touser: config.touser || '@all',
+        ...config
+      })
+    }).then(result => result.json())
+      .then(response => resolve(response))
+      .catch(reject);
+  })
 };
 
 module.exports = postMsg;
