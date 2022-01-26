@@ -1,13 +1,13 @@
 // 接口请求相关
 const express = require('express');
-const fetch = require('node-fetch');
+const axios = require('axios');
 const xml2js = require('xml2js');
 const xmlBodyParser = require('express-xml-bodyparser');
 const app = express();
 app.use(xmlBodyParser());
 
 // 接口链接相关
-const apiUrl = 'http://www.tuling123.com/openapi/api';
+const apiUrl = 'http://openapi.turingapi.com/openapi/api/v2';
 const apiKey = '0e4017d36c9f4cb1b59694f528e73e34';
 
 // 企信消息相关
@@ -28,28 +28,44 @@ app.get('/', (req, res) => {
 app.post('/', (req, appRes) => {
   // 解析得到的xml数据
   xmlParser.parseString(decrypt(aesKey, req.body.xml.encrypt[0]).message, (err, xmlRes) => {
-    console.log("ssss0->", xmlRes.xml);
     const FromUserName = xmlRes.xml.FromUserName[0];
     const Content = xmlRes.xml.Content[0];
-    console.log("ssss1->", FromUserName, Content);
-    fetch(apiUrl, {
+    axios({
+      url: apiUrl,
       method: 'POST',
-      body: JSON.stringify({
-        key: apiKey,
-        info: Content
-      })
-    }).then(result => result.json())
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        reqType: 0,
+        perception: {
+          inputText: {
+            text: Content
+          }
+        },
+        userInfo: {
+          apiKey: apiKey,
+          userId: FromUserName
+        }
+      }
+    })
       .then(result => {
-        console.log("ssss2->", result.text);
         // 直接回复个空数据
         appRes.send('');
         // 获取数据，然后进行消息推送进行发布
-        const text = result.text;
+        const results = result.data.results;
+        let content = '';
+        for (const result of results) {
+          const {resultType, values} = result;
+          const {text, url} = values;
+          if (resultType === 'text' || resultType === 'url') {
+            content += `${text || url || ''}、`
+          }
+        }
+        content = content.length === 0 ? content : content.substring(0, content.length - 1);
         wxNotify({
           touser: FromUserName,
-          text: {
-            content: text,
-          },
+          text: {content}
         })
       });
   });
