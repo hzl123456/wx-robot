@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, appRes) => {
   // 解析得到的xml数据
   xmlParser.parseString(decrypt(aesKey, req.body.xml.encrypt[0]).message, (err, xmlRes) => {
+    console.log("ssss0->", xmlRes.xml);
     const FromUserName = xmlRes.xml.FromUserName[0];
     const Content = xmlRes.xml.Content[0];
     console.log("ssss1->", FromUserName, Content);
@@ -45,8 +46,8 @@ app.post('/', (req, appRes) => {
         // 获取数据，然后进行消息推送进行发布
         const text = result.text;
         wxNotify({
+          touser: FromUserName,
           text: {
-            touser: FromUserName,
             content: text,
           },
         })
