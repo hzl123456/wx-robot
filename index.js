@@ -15,7 +15,7 @@ const aesKey = 'NoHnuhMtRwcBpdw81ycvuMgOg5e23sHsWeqKy1gDi7g';
 
 // xml 解析
 const xmlParser = new xml2js.Parser();
-const xmlBuilder = new xml2js.Builder({rootName: 'xml'});
+const xmlBuilder = new xml2js.Builder({rootName: 'xml', xmldec: ''});
 
 // 企信校验
 app.get('/', (req, res) => {
@@ -48,7 +48,10 @@ app.post('/', (req, appRes) => {
             TimeStamp,
             Encrypt: `<![CDATA[${Encrypt}]]>`,
             MsgSignature: `<![CDATA[${MsgSignature}]]>`,
-          }).toString().replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+          }).toString()
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace('<?xml version="1.0"?>', '');
           console.log("ssss3->", sendResult);
           appRes.send(sendResult);
         } catch (e) {
