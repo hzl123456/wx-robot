@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, appRes) => {
   // 解析得到的xml数据
   xmlParser.parseString(decrypt(aesKey, req.body.xml.encrypt[0]).message, (err, xmlRes) => {
-    console.log("ssss1->", err, xmlRes);
+    console.log("ssss1->", err, xmlRes.xml.Content[0]);
     fetch(apiUrl, {
       method: 'POST',
       body: JSON.stringify({
@@ -44,11 +44,11 @@ app.post('/', (req, appRes) => {
           const Encrypt = encrypt(aesKey, result.text, Nonce);
           const MsgSignature = getSignature(token, TimeStamp, Nonce, Encrypt);
           const sendResult = xmlBuilder.buildObject({
-            Nonce,
+            Nonce: `<![CDATA[${Nonce}]]>`,
             TimeStamp,
-            Encrypt,
-            MsgSignature
-          }).toString();
+            Encrypt: `<![CDATA[${Encrypt}]]>`,
+            MsgSignature: `<![CDATA[${MsgSignature}]]>`,
+          }).toString().replace(/&lt;/g, '<').replace(/&gt;/g, '>');
           console.log("ssss3->", sendResult);
           appRes.send(sendResult);
         } catch (e) {
